@@ -9,7 +9,13 @@ import io.cc.cache.command.GetCommand;
 import io.cc.cache.command.InfoCommand;
 import io.cc.cache.command.InrcByCommand;
 import io.cc.cache.command.InrcCommand;
+import io.cc.cache.command.LlenCommand;
+import io.cc.cache.command.LpopCommand;
+import io.cc.cache.command.LpushCommand;
+import io.cc.cache.command.LrangeCommand;
 import io.cc.cache.command.PingCommand;
+import io.cc.cache.command.RpopCommand;
+import io.cc.cache.command.RpushCommand;
 import io.cc.cache.command.SetCommand;
 import io.cc.cache.command.StrlenCommand;
 import java.util.LinkedHashMap;
@@ -40,6 +46,13 @@ public class Commands {
         register(new InrcByCommand());
         register(new DecrCommand());
         register(new DecrByCommand());
+
+        register(new LpushCommand());
+        register(new LpopCommand());
+        register(new RpushCommand());
+        register(new RpopCommand());
+        register(new LlenCommand());
+        register(new LrangeCommand());
     }
 
     public static void register(Command command) {

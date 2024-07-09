@@ -1,6 +1,9 @@
 package io.cc.cache.core;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,5 +64,96 @@ public class CcCache {
             return 0;
         }
         return 1;
+    }
+
+    public int lpush(String key, String... values) {
+        CcCacheEntry<LinkedList<String>> entry = (CcCacheEntry) map.get(key);
+        if (entry == null) {
+            entry = new CcCacheEntry<>(new LinkedList<>());
+        }
+        LinkedList list = entry.getValue();
+
+        List.of(values).forEach(list::addFirst);
+
+        entry.setValue(list);
+
+        map.put(key, entry);
+
+        return list.size();
+    }
+
+    public String lpop(String key) {
+        CcCacheEntry<LinkedList<String>> entry = (CcCacheEntry) map.get(key);
+        if (entry == null || entry.getValue().size() <= 0) {
+            return null;
+        }
+        LinkedList<String> list = entry.getValue();
+        return list.removeFirst();
+    }
+
+    public int llen(String key) {
+        CcCacheEntry<LinkedList<String>> entry = (CcCacheEntry) map.get(key);
+        if (entry == null || entry.getValue().size() <= 0) {
+            return 0;
+        }
+        LinkedList<String> list = entry.getValue();
+        return list.size();
+    }
+
+    public int rpush(String key, String... values) {
+        CcCacheEntry<LinkedList<String>> entry = (CcCacheEntry) map.get(key);
+        if (entry == null) {
+            entry = new CcCacheEntry<>(new LinkedList<>());
+        }
+        LinkedList list = entry.getValue();
+
+        List.of(values).forEach(list::addLast);
+
+        entry.setValue(list);
+
+        map.put(key, entry);
+
+        return list.size();
+    }
+
+    public String rpop(String key) {
+        CcCacheEntry<LinkedList<String>> entry = (CcCacheEntry) map.get(key);
+        if (entry == null || entry.getValue().size() <= 0) {
+            return null;
+        }
+        LinkedList<String> list = entry.getValue();
+        return list.removeLast();
+    }
+
+    public List<String> lrange(final String key, final int start, final int end) {
+        CcCacheEntry<LinkedList<String>> entry = (CcCacheEntry) map.get(key);
+        if (entry == null || entry.getValue() == null || entry.getValue().size() <= 0) {
+            return new ArrayList<>();
+        }
+        LinkedList<String> list = entry.getValue();
+        int size = list.size();
+
+        int startIndex = start;
+        if (start < 0) {
+            startIndex =  Math.floorMod(start, size);
+            if (startIndex < 0) {
+                startIndex += size;
+            }
+        }
+
+        int endIndex = end;
+        if (end < 0) {
+            endIndex = Math.floorMod(end, size);
+            if (endIndex < 0) {
+                endIndex += size;
+            }
+        }
+        endIndex = Math.min(endIndex + 1, size);
+
+        List<String> result = new ArrayList<>();
+        for (int i = startIndex; i < endIndex; i++) {
+            result.add(list.get(i));
+        }
+        return result;
     }
 }

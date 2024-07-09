@@ -8,12 +8,20 @@ import io.netty.channel.ChannelHandlerContext;
  */
 public class ErrorReply extends Reply<String> {
 
+    public ErrorReply() {
+        super(null);
+    }
+
     public ErrorReply(final String content) {
         super(content);
     }
 
     @Override
     public void execute(final ChannelHandlerContext ctx) {
-        error(ctx, content);
+        if (content == null) {
+            error(ctx);
+        } else  {
+            error(ctx, content);
+        }
     }
 }
