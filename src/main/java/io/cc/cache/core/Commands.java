@@ -1,23 +1,26 @@
 package io.cc.cache.core;
 
-import io.cc.cache.command.CommandCommand;
-import io.cc.cache.command.DecrByCommand;
-import io.cc.cache.command.DecrCommand;
-import io.cc.cache.command.DelCommand;
-import io.cc.cache.command.ExistsCommand;
-import io.cc.cache.command.GetCommand;
-import io.cc.cache.command.InfoCommand;
-import io.cc.cache.command.InrcByCommand;
-import io.cc.cache.command.InrcCommand;
-import io.cc.cache.command.LlenCommand;
-import io.cc.cache.command.LpopCommand;
-import io.cc.cache.command.LpushCommand;
-import io.cc.cache.command.LrangeCommand;
-import io.cc.cache.command.PingCommand;
-import io.cc.cache.command.RpopCommand;
-import io.cc.cache.command.RpushCommand;
-import io.cc.cache.command.SetCommand;
-import io.cc.cache.command.StrlenCommand;
+import io.cc.cache.command.generic.CommandCommand;
+import io.cc.cache.command.string.AppendCommand;
+import io.cc.cache.command.string.DecrByCommand;
+import io.cc.cache.command.string.DecrCommand;
+import io.cc.cache.command.key.DelCommand;
+import io.cc.cache.command.key.ExistsCommand;
+import io.cc.cache.command.string.GetCommand;
+import io.cc.cache.command.generic.InfoCommand;
+import io.cc.cache.command.string.InrcByCommand;
+import io.cc.cache.command.string.InrcCommand;
+import io.cc.cache.command.list.LlenCommand;
+import io.cc.cache.command.list.LpopCommand;
+import io.cc.cache.command.list.LpushCommand;
+import io.cc.cache.command.list.LrangeCommand;
+import io.cc.cache.command.generic.PingCommand;
+import io.cc.cache.command.list.RpopCommand;
+import io.cc.cache.command.list.RpushCommand;
+import io.cc.cache.command.string.MgetCommand;
+import io.cc.cache.command.string.MsetCommand;
+import io.cc.cache.command.string.SetCommand;
+import io.cc.cache.command.string.StrlenCommand;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -46,6 +49,9 @@ public class Commands {
         register(new InrcByCommand());
         register(new DecrCommand());
         register(new DecrByCommand());
+        register(new MsetCommand());
+        register(new MgetCommand());
+        register(new AppendCommand());
 
         register(new LpushCommand());
         register(new LpopCommand());

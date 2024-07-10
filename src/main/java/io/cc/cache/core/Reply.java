@@ -47,6 +47,8 @@ public abstract class Reply<T> {
     }
 
     protected void array(final ChannelHandlerContext ctx, final List<String> contents) {
+
+
         // * + 长度 + \r\n
         // $ + 长度 + \r\n + 内容 + \r\n
         // example:
@@ -57,7 +59,11 @@ public abstract class Reply<T> {
         ByteBuf buffer = Unpooled.buffer(128);
         buffer.writeBytes(("*" + contents.size() + "\r\n").getBytes());
         for (String content : contents) {
-            buffer.writeBytes(("$" + content.getBytes().length + "\r\n" + content + "\r\n").getBytes());
+            if (content == null) {
+                buffer.writeBytes(("$-1\r\n").getBytes());
+            } else {
+                buffer.writeBytes(("$" + content.getBytes().length + "\r\n" + content + "\r\n").getBytes());
+            }
         }
         ctx.writeAndFlush(buffer);
     }

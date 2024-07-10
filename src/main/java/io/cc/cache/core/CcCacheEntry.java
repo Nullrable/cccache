@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class CcCacheEntry <V>{
+
     private V value;
 }

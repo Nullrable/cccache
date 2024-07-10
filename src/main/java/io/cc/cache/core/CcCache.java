@@ -11,9 +11,9 @@ import java.util.Map;
  */
 public class CcCache {
 
-    private static Map<String, CcCacheEntry<?>> map = new HashMap<>();
+    private static final Map<String, CcCacheEntry<?>> map = new HashMap<>();
 
-    public void put(String key, String value) {
+    public void set(String key, String value) {
         map.put(key, new CcCacheEntry<>(value));
     }
 
@@ -140,7 +140,6 @@ public class CcCache {
                 startIndex += size;
             }
         }
-
         int endIndex = end;
         if (end < 0) {
             endIndex = Math.floorMod(end, size);
@@ -155,5 +154,15 @@ public class CcCache {
             result.add(list.get(i));
         }
         return result;
+    }
+
+    public int append(final String key, final String value) {
+       String oldValue = get(key);
+       String newValue = value;
+       if (oldValue != null) {
+           newValue = oldValue + newValue;
+       }
+       set(key, newValue);
+       return newValue.length();
     }
 }

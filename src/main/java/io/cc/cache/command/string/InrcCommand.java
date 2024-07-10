@@ -1,16 +1,16 @@
-package io.cc.cache.command;
+package io.cc.cache.command.string;
 
 import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Reply;
-import io.cc.cache.reply.BlukStringReply;
+import io.cc.cache.reply.IntegerReply;
 
 /**
  * @author nhsoft.lsd
  */
-public class GetCommand implements Command {
+public class InrcCommand implements Command {
 
-    public static final String NAME = "GET";
+    public static final String NAME = "INCR";
 
     @Override
     public String getName() {
@@ -20,7 +20,6 @@ public class GetCommand implements Command {
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
         String key = args[4];
-        String value = cache.get(key);
-        return new BlukStringReply(value);
+        return new IntegerReply(cache.incr(key));
     }
 }

@@ -1,19 +1,16 @@
-package io.cc.cache.command;
+package io.cc.cache.command.string;
 
 import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Reply;
-import io.cc.cache.reply.ArrayReply;
-import io.cc.cache.core.Commands;
-import java.util.List;
+import io.cc.cache.reply.BlukStringReply;
 
 /**
  * @author nhsoft.lsd
  */
+public class GetCommand implements Command {
 
-public class CommandCommand implements Command {
-
-    public static final String NAME = "COMMAND";
+    public static final String NAME = "GET";
 
     @Override
     public String getName() {
@@ -22,6 +19,8 @@ public class CommandCommand implements Command {
 
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
-        return new ArrayReply(List.of(Commands.getCommandNames()));
+        String key = args[4];
+        String value = cache.get(key);
+        return new BlukStringReply(value);
     }
 }

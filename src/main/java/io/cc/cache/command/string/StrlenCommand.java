@@ -1,10 +1,9 @@
-package io.cc.cache.command;
+package io.cc.cache.command.string;
 
 import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Reply;
 import io.cc.cache.reply.IntegerReply;
-import io.cc.cache.reply.StringReply;
 
 /**
  * @author nhsoft.lsd

@@ -1,4 +1,4 @@
-package io.cc.cache.command;
+package io.cc.cache.command.key;
 
 import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
@@ -8,9 +8,9 @@ import io.cc.cache.reply.IntegerReply;
 /**
  * @author nhsoft.lsd
  */
-public class InrcCommand implements Command {
+public class DelCommand implements Command {
 
-    public static final String NAME = "INCR";
+    public static final String NAME = "DEL";
 
     @Override
     public String getName() {
@@ -18,8 +18,8 @@ public class InrcCommand implements Command {
     }
 
     @Override
-    public Reply<?> execute(final CcCache cache, final String[] args) {
+    public Reply execute(final CcCache cache, final String[] args) {
         String key = args[4];
-        return new IntegerReply(cache.incr(key));
+        return new IntegerReply(cache.del(key));
     }
 }

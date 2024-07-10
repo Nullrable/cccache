@@ -1,4 +1,4 @@
-package io.cc.cache.command;
+package io.cc.cache.command.key;
 
 import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
@@ -8,9 +8,9 @@ import io.cc.cache.reply.IntegerReply;
 /**
  * @author nhsoft.lsd
  */
-public class DecrCommand implements Command {
+public class ExistsCommand implements Command {
 
-    public static final String NAME = "DECR";
+    public static final String NAME = "EXISTS";
 
     @Override
     public String getName() {
@@ -20,6 +20,8 @@ public class DecrCommand implements Command {
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
         String key = args[4];
-        return new IntegerReply(cache.decr(key));
+        boolean exists = cache.containsKey(key);
+        int ret = exists ? 1 : 0;
+        return new IntegerReply(ret);
     }
 }

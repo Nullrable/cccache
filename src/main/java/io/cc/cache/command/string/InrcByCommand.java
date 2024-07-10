@@ -1,4 +1,4 @@
-package io.cc.cache.command;
+package io.cc.cache.command.string;
 
 import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
