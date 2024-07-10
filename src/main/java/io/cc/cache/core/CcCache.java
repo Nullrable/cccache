@@ -1,6 +1,7 @@
 package io.cc.cache.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,7 +23,7 @@ public class CcCache {
         return entry == null ? null : entry.getValue();
     }
 
-    public boolean containsKey(String key) {
+    public boolean exists(String key) {
         return map.containsKey(key);
     }
 
@@ -164,5 +165,72 @@ public class CcCache {
        }
        set(key, newValue);
        return newValue.length();
+    }
+
+    public String getrange(final String key, int start, int end) {
+        String value = get(key);
+        if (value == null || value.length() <= 0) {
+            return null;
+        }
+        char[] exist = value.toCharArray();
+
+        int size = exist.length;
+
+        int startIndex = start;
+        if (start < 0) {
+            startIndex =  Math.floorMod(start, size);
+            if (startIndex < 0) {
+                startIndex += size;
+            }
+        }
+        int endIndex = end;
+        if (end < 0) {
+            endIndex = Math.floorMod(end, size);
+            if (endIndex < 0) {
+                endIndex += size;
+            }
+        }
+        endIndex = Math.min(endIndex + 1, size);
+
+        int len = endIndex - startIndex;
+        char[] ret = new char[len];
+        for(int i= 0; i < len; i++) {
+            ret[i] = exist[i + startIndex];
+        }
+        return new String(ret);
+    }
+
+    public String getset(final String key, final String value) {
+
+        String oldValue = get(key);
+
+        set(key, value);
+
+        return oldValue;
+    }
+
+    public int setrange(final String key, final String value, final int offset) {
+
+        String oldValue = get(key);
+        if (oldValue == null) {
+            oldValue = "";
+        }
+        int oldLen = oldValue.length();
+
+        if (offset > oldLen) {
+            int len = offset - oldLen;
+            String[] blanks = new String[len];
+            Arrays.fill(blanks, 0, len, "\u0000");
+            for (String blank : blanks) {
+                oldValue = oldValue + blank;
+            }
+            oldValue = oldValue +value;
+        } else {
+            oldValue = oldValue.substring(0, offset);
+            oldValue = oldValue + value;
+        }
+        set(key, oldValue);
+
+        return oldValue.length();
     }
 }

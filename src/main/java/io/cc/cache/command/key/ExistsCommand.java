@@ -20,7 +20,7 @@ public class ExistsCommand implements Command {
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
         String key = args[4];
-        boolean exists = cache.containsKey(key);
+        boolean exists = cache.exists(key);
         int ret = exists ? 1 : 0;
         return new IntegerReply(ret);
     }
