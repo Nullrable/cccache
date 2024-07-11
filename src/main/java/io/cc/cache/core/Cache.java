@@ -4,13 +4,12 @@ import io.cc.cache.exception.SyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.PatternSyntaxException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +20,7 @@ import lombok.NoArgsConstructor;
  */
 public class Cache {
 
-    private static final Map<String, CacheEntry<?>> map = new HashMap<>();
+    private static final Map<String, CacheEntry<?>> map = new LinkedHashMap<>();
 
     @AllArgsConstructor
     @NoArgsConstructor
@@ -275,7 +274,7 @@ public class Cache {
 
     public int hdel(final String key, final String field) {
 
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
 
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
@@ -288,9 +287,9 @@ public class Cache {
     }
 
     public int hset(final String key, final String field, final String value) {
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
-            cacheEntry = new CacheEntry<>(new HashMap<>());
+            cacheEntry = new CacheEntry<>(new LinkedHashMap<>());
             map.put(key, cacheEntry);
         }
         Map<String, String> hashMap = cacheEntry.getValue();
@@ -299,7 +298,7 @@ public class Cache {
     }
 
     public String hget(final String key, final String field) {
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return null;
         }
@@ -308,7 +307,7 @@ public class Cache {
     }
 
     public int hexists(final String key, final String field) {
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -317,7 +316,7 @@ public class Cache {
     }
 
     public List<String> hgetall(final String key) {
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return new ArrayList<>();
         }
@@ -331,9 +330,9 @@ public class Cache {
     }
 
     public int hincrby(final String key, final String field, final int value) {
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
-            cacheEntry = new CacheEntry<>(new HashMap<>());
+            cacheEntry = new CacheEntry<>(new LinkedHashMap<>());
             map.put(key, cacheEntry);
         }
         Map<String, String> hashMap = cacheEntry.getValue();
@@ -344,7 +343,7 @@ public class Cache {
     }
 
     public List<String> hkeys(final String key) {
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return new ArrayList<>();
         }
@@ -354,7 +353,7 @@ public class Cache {
     }
 
     public int hlen(final String key) {
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -363,9 +362,9 @@ public class Cache {
     }
 
     public int hsetnx(final String key, final String field, final String value) {
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
-            cacheEntry = new CacheEntry<>(new HashMap<>());
+            cacheEntry = new CacheEntry<>(new LinkedHashMap<>());
             map.put(key, cacheEntry);
         }
         Map<String, String> hashMap = cacheEntry.getValue();
@@ -377,7 +376,7 @@ public class Cache {
     }
 
     public List<String> hvals(final String key) {
-        CacheEntry<HashMap<String, String>> cacheEntry = (CacheEntry<HashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return new ArrayList<>();
         }
