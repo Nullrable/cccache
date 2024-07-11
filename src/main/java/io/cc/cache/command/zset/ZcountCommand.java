@@ -1,4 +1,4 @@
-package io.cc.cache.command.key;
+package io.cc.cache.command.zset;
 
 import io.cc.cache.core.Cache;
 import io.cc.cache.core.Command;
@@ -8,20 +8,19 @@ import io.cc.cache.reply.IntegerReply;
 /**
  * @author nhsoft.lsd
  */
-public class ExistsCommand implements Command {
-
-    public static final String NAME = "EXISTS";
-
+public class ZcountCommand implements Command {
     @Override
     public String getName() {
-        return NAME;
+        return "ZCOUNT";
     }
 
     @Override
     public Reply<?> execute(final Cache cache, final String[] args) {
+
         String key = args[4];
-        boolean exists = cache.exists(key);
-        int ret = exists ? 1 : 0;
-        return new IntegerReply(ret);
+        double min = Double.parseDouble(args[6]);
+        double max = Double.parseDouble(args[8]);
+        int count = cache.zcount(key, min, max);
+        return new IntegerReply(count);
     }
 }

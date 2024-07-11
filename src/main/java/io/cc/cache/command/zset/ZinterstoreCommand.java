@@ -1,4 +1,4 @@
-package io.cc.cache.command.set;
+package io.cc.cache.command.zset;
 
 import io.cc.cache.core.Cache;
 import io.cc.cache.core.Command;
@@ -10,21 +10,23 @@ import java.util.List;
 /**
  * @author nhsoft.lsd
  */
-public class SunionStoreCommand implements Command {
+public class ZinterstoreCommand implements Command {
     @Override
     public String getName() {
-        return "SUNIONSTORE";
+        return "ZINTERSTORE";
     }
 
     @Override
     public Reply<?> execute(final Cache cache, final String[] args) {
-
         String destination = args[4];
+        int numkeys = Integer.parseInt(args[6]);
+
         List<String> keys = new ArrayList<>();
-        for (int i = 6; i < args.length; i += 2) {
+        for (int i = 8; i < args.length; i += 2) {
             keys.add(args[i]);
         }
-        int ret = cache.sunionstore(destination, keys.toArray(new String[0]));
+        int ret = cache.zinterstore(destination, numkeys, keys.toArray(new String[0]));
+
         return new IntegerReply(ret);
     }
 }

@@ -1,6 +1,6 @@
 package io.cc.cache.command.key;
 
-import io.cc.cache.core.CcCache;
+import io.cc.cache.core.Cache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Reply;
 import io.cc.cache.reply.ArrayReply;
@@ -20,7 +20,7 @@ public class KeysCommand implements Command {
     }
 
     @Override
-    public Reply<?> execute(final CcCache cache, final String[] args) {
+    public Reply<?> execute(final Cache cache, final String[] args) {
 
         Set<String> keys = cache.getKeys();
 

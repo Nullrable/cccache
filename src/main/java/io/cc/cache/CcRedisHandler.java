@@ -1,9 +1,10 @@
 package io.cc.cache;
 
-import io.cc.cache.core.CcCache;
+import io.cc.cache.core.Cache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Commands;
 import io.cc.cache.core.Reply;
+import io.cc.cache.exception.SyntaxException;
 import io.cc.cache.reply.ErrorReply;
 import io.cc.cache.reply.StringReply;
 import io.netty.channel.ChannelHandlerContext;
@@ -16,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CcRedisHandler extends SimpleChannelInboundHandler<String> {
 
-    private final CcCache cache = new CcCache();
+    private final Cache cache = new Cache();
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final String string) {
@@ -40,6 +41,8 @@ public class CcRedisHandler extends SimpleChannelInboundHandler<String> {
             new ErrorReply("WRONGTYPE Operation against a key holding the wrong kind of value").execute(ctx);
         } catch (IndexOutOfBoundsException e) {
             new ErrorReply("ERR wrong number of arguments for '" + command + "' command").execute(ctx);
+        } catch (SyntaxException e) {
+            new ErrorReply("ERR syntax error").execute(ctx);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
             new ErrorReply(e.getMessage()).execute(ctx);

@@ -8,5 +8,5 @@ public interface Command {
 
     String getName();
 
-    Reply<?> execute(CcCache cache, String[] args);
+    Reply<?> execute(Cache cache, String[] args);
 }

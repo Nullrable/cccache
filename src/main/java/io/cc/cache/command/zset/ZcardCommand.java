@@ -1,25 +1,23 @@
-package io.cc.cache.command.set;
+package io.cc.cache.command.zset;
 
 import io.cc.cache.core.Cache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Reply;
-import io.cc.cache.reply.ArrayReply;
-import java.util.ArrayList;
-import java.util.Set;
+import io.cc.cache.reply.IntegerReply;
 
 /**
  * @author nhsoft.lsd
  */
-public class SmembersCommand implements Command {
+public class ZcardCommand implements Command {
     @Override
     public String getName() {
-        return "SMEMBERS";
+        return "ZCARD";
     }
 
     @Override
     public Reply<?> execute(final Cache cache, final String[] args) {
         String key = args[4];
-        Set<String> sets = cache.smembers(key);
-        return new ArrayReply(new ArrayList<>(sets));
+        int size = cache.zcard(key);
+        return new IntegerReply(size);
     }
 }

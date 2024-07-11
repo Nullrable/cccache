@@ -1,6 +1,6 @@
 package io.cc.cache.command.set;
 
-import io.cc.cache.core.CcCache;
+import io.cc.cache.core.Cache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Reply;
 import io.cc.cache.reply.IntegerReply;
@@ -17,7 +17,7 @@ public class SaddCommand implements Command {
     }
 
     @Override
-    public Reply<?> execute(final CcCache cache, final String[] args) {
+    public Reply<?> execute(final Cache cache, final String[] args) {
         String key = args[4];
 
         List<String> members = new ArrayList<>();

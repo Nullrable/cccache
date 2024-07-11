@@ -52,6 +52,12 @@ import io.cc.cache.command.string.MsetnxCommand;
 import io.cc.cache.command.string.SetCommand;
 import io.cc.cache.command.string.SetRangeCommand;
 import io.cc.cache.command.string.StrlenCommand;
+import io.cc.cache.command.zset.ZaddCommand;
+import io.cc.cache.command.zset.ZcardCommand;
+import io.cc.cache.command.zset.ZcountCommand;
+import io.cc.cache.command.zset.ZincrbyCommand;
+import io.cc.cache.command.zset.ZinterstoreCommand;
+import io.cc.cache.command.zset.ZrangeCommand;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -126,6 +132,14 @@ public class Commands {
         register(new SremCommand());
         register(new SunionCommand());
         register(new SunionStoreCommand());
+
+        //zset
+        register(new ZaddCommand());
+        register(new ZcardCommand());
+        register(new ZcountCommand());
+        register(new ZincrbyCommand());
+        register(new ZinterstoreCommand());
+        register(new ZrangeCommand());
     }
 
     public static void register(Command command) {

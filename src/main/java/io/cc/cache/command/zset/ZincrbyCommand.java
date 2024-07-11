@@ -1,4 +1,4 @@
-package io.cc.cache.command.hash;
+package io.cc.cache.command.zset;
 
 import io.cc.cache.core.Cache;
 import io.cc.cache.core.Command;
@@ -8,22 +8,21 @@ import io.cc.cache.reply.StringReply;
 /**
  * @author nhsoft.lsd
  */
-public class HmsetCommand implements Command {
+public class ZincrbyCommand implements Command {
     @Override
     public String getName() {
-        return "HMSET";
+        return "ZINCRBY";
     }
 
     @Override
     public Reply<?> execute(final Cache cache, final String[] args) {
+
         String key = args[4];
+        double increment = Double.parseDouble(args[6]);
+        String member = args[8];
 
-        for (int i = 6; i < args.length; i+=4) {
-            String field = args[i];
-            String value = args[i + 2];
-            cache.hset(key, field, value);
-        }
+        double score = cache.zincrby(key, increment, member);
 
-        return new StringReply("OK");
+        return new StringReply(String.valueOf(score));
     }
 }

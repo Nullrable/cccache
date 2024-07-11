@@ -1,6 +1,6 @@
 package io.cc.cache.command.hash;
 
-import io.cc.cache.core.CcCache;
+import io.cc.cache.core.Cache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Reply;
 import io.cc.cache.reply.IntegerReply;
@@ -15,7 +15,7 @@ public class HexistsCommand implements Command {
     }
 
     @Override
-    public Reply<?> execute(final CcCache cache, final String[] args) {
+    public Reply<?> execute(final Cache cache, final String[] args) {
         String key = args[4];
         String field = args[6];
         int ret = cache.hexists(key, field);
