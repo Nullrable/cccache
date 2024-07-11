@@ -14,6 +14,20 @@ import io.cc.cache.command.hash.HsetCommand;
 import io.cc.cache.command.hash.HsetnxCommand;
 import io.cc.cache.command.hash.HvalsCommand;
 import io.cc.cache.command.key.KeysCommand;
+import io.cc.cache.command.set.SaddCommand;
+import io.cc.cache.command.set.ScardCommand;
+import io.cc.cache.command.set.SdiffCommand;
+import io.cc.cache.command.set.SdiffStoreCommand;
+import io.cc.cache.command.set.SinterCommand;
+import io.cc.cache.command.set.SinterStoreCommand;
+import io.cc.cache.command.set.SisMemberCommand;
+import io.cc.cache.command.set.SmembersCommand;
+import io.cc.cache.command.set.SmoveCommand;
+import io.cc.cache.command.set.SpopCommand;
+import io.cc.cache.command.set.SrandMemberCommand;
+import io.cc.cache.command.set.SremCommand;
+import io.cc.cache.command.set.SunionCommand;
+import io.cc.cache.command.set.SunionStoreCommand;
 import io.cc.cache.command.string.AppendCommand;
 import io.cc.cache.command.string.DecrByCommand;
 import io.cc.cache.command.string.DecrCommand;
@@ -97,6 +111,21 @@ public class Commands {
         register(new HsetnxCommand());
         register(new HvalsCommand());
 
+        //set
+        register(new SaddCommand());
+        register(new ScardCommand());
+        register(new SdiffCommand());
+        register(new SdiffStoreCommand());
+        register(new SinterCommand());
+        register(new SinterStoreCommand());
+        register(new SisMemberCommand());
+        register(new SmembersCommand());
+        register(new SmoveCommand());
+        register(new SpopCommand());
+        register(new SrandMemberCommand());
+        register(new SremCommand());
+        register(new SunionCommand());
+        register(new SunionStoreCommand());
     }
 
     public static void register(Command command) {

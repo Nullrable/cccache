@@ -2,7 +2,10 @@ package io.cc.cache.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -351,5 +354,178 @@ public class CcCache {
         Map<String, String> hashMap = cacheEntry.getValue();
         List<String> list = new ArrayList<>(hashMap.values());
         return list;
+    }
+
+    public int sadd(final String key, final String... members) {
+        CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            cacheEntry = new CcCacheEntry<>(new HashSet<>());
+            map.put(key, cacheEntry);
+        }
+        Set<String> set = cacheEntry.getValue();
+        int count = 0;
+        for (String member : members) {
+            if (!set.contains(member)) {
+                count++;
+                set.add(member);
+            }
+        }
+        return count;
+    }
+
+    public int scard(final String key) {
+        CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return 0;
+        }
+        Set<String> set = cacheEntry.getValue();
+        return set.size();
+    }
+
+    public Set<String> sdiff(final String... keys) {
+        CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(keys[0]);
+        Set<String> originSet;
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            originSet = new HashSet<>();
+        } else {
+            originSet = new HashSet<>(cacheEntry.getValue());
+        }
+
+        for (int i = 1; i < keys.length; i++) {
+            CcCacheEntry<Set<String>> cacheEntryOther = (CcCacheEntry<Set<String>>) map.get(keys[i]);
+            if (cacheEntry == null || cacheEntry.getValue() == null) {
+                continue;
+            }
+            Set<String> otherSet = cacheEntryOther.getValue();
+            originSet.removeAll(otherSet);
+        }
+        return originSet;
+    }
+
+    public Set<String> sdiffstore(final String destination, final String... keys) {
+        Set<String> diffSet = sdiff(keys);
+        map.put(destination, new CcCacheEntry<>(diffSet));
+        return diffSet;
+    }
+
+    public Set<String> sinter(final String... keys) {
+        CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(keys[0]);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return new HashSet<>();
+        }
+        Set<String> originSet = new HashSet<>(cacheEntry.getValue());
+        for (int i = 1; i < keys.length; i++) {
+            CcCacheEntry<Set<String>> cacheEntryOther = (CcCacheEntry<Set<String>>) map.get(keys[i]);
+            if (cacheEntry == null || cacheEntry.getValue() == null) {
+                continue;
+            }
+            Set<String> otherSet = cacheEntryOther.getValue();
+            originSet.retainAll(otherSet);
+        }
+        return originSet;
+    }
+
+    public Set<String> sinterstore(final String destination, final String... keys) {
+        Set<String> interSet = sinter(keys);
+        map.put(destination, new CcCacheEntry<>(interSet));
+        return interSet;
+    }
+
+    public int sismember(final String key, final String member) {
+        CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return 0;
+        }
+        Set<String> set = cacheEntry.getValue();
+        return set.contains(member) ? 1 : 0;
+    }
+
+    public Set<String> smembers(final String key) {
+        CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return new HashSet<>();
+        }
+        return cacheEntry.getValue();
+    }
+
+    public int smove(final String source, final String destination, final String member) {
+        CcCacheEntry<Set<String>> sourceEntry = (CcCacheEntry<Set<String>>) map.get(source);
+        if (sourceEntry == null || sourceEntry.getValue() == null) {
+            return 0;
+        }
+        Set<String> sourceSet = sourceEntry.getValue();
+        boolean contained = sourceSet.remove(member);
+        if (!contained) {
+            return 0;
+        }
+        sadd(destination, member);
+        return 1;
+    }
+
+    public String spop(final String key) {
+        CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return null;
+        }
+        Set<String> set = cacheEntry.getValue();
+
+        List<String> list = new ArrayList<>(set);
+        Collections.shuffle(list);
+
+        for (String member : list) {
+            if (set.remove(member)) {
+                return member;
+            }
+        }
+        return null;
+    }
+
+    public Set<String> srandmember(final String key, final int count) {
+        CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return new HashSet<>();
+        }
+        Set<String> set = cacheEntry.getValue();
+        List<String> list = new ArrayList<>(set);
+        Collections.shuffle(list);
+        int size = list.size();
+
+        if (count > 0 && count < size) {
+            size = count;
+        } else if (count <= 0 && Math.abs(count) >= size) {
+            size = 0;
+        }
+        return new HashSet<>(list.subList(0, size));
+    }
+
+    public int srem(final String key, final String... members) {
+        CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return 0;
+        }
+        Set<String> set = cacheEntry.getValue();
+        int count = 0;
+        for (String member : members) {
+            count += set.remove(member) ? 1 : 0;
+        }
+        return count;
+    }
+
+    public Set<String> sunion(final String... keys) {
+        Set<String> set = new HashSet<>();
+        for (String key : keys) {
+            CcCacheEntry<Set<String>> cacheEntry = (CcCacheEntry<Set<String>>) map.get(key);
+            if (cacheEntry == null || cacheEntry.getValue() == null) {
+                continue;
+            }
+            set.addAll(cacheEntry.getValue());
+        }
+        return set;
+    }
+
+    public int sunionstore(final String destination, final String... keys) {
+        Set<String> sets = sunion(keys);
+        map.put(destination, new CcCacheEntry<>(sets));
+        return sets.size();
     }
 }

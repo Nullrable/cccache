@@ -8,10 +8,12 @@ import io.cc.cache.reply.ErrorReply;
 import io.cc.cache.reply.StringReply;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author nhsoft.lsd
  */
+@Slf4j
 public class CcRedisHandler extends SimpleChannelInboundHandler<String> {
 
     private final CcCache cache = new CcCache();
@@ -39,6 +41,7 @@ public class CcRedisHandler extends SimpleChannelInboundHandler<String> {
         } catch (IndexOutOfBoundsException e) {
             new ErrorReply("ERR wrong number of arguments for '" + command + "' command").execute(ctx);
         } catch (Exception e) {
+            log.error(e.getMessage(), e);
             new ErrorReply(e.getMessage()).execute(ctx);
         }
     }
