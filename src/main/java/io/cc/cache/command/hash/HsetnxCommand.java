@@ -1,4 +1,4 @@
-package io.cc.cache.command.list;
+package io.cc.cache.command.hash;
 
 import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
@@ -8,22 +8,18 @@ import io.cc.cache.reply.IntegerReply;
 /**
  * @author nhsoft.lsd
  */
-public class LlenCommand implements Command {
-
-    public static final String NAME = "LLEN";
-
+public class HsetnxCommand implements Command {
     @Override
     public String getName() {
-        return NAME;
+        return "HSETXN";
     }
 
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
-
         String key = args[4];
-
-        int size = cache.llen(key);
-
-        return new IntegerReply(size);
+        String field = args[6];
+        String value = args[8];
+        int ret = cache.hsetnx(key, field, value);
+        return new IntegerReply(ret);
     }
 }

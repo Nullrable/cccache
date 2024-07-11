@@ -20,6 +20,7 @@ public class GetCommand implements Command {
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
         String key = args[4];
+
         String value = cache.get(key);
         return new BlukStringReply(value);
     }

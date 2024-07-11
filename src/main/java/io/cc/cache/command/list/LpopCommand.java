@@ -21,10 +21,6 @@ public class LpopCommand implements Command {
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
 
-        if (args.length <= 4) {
-            return new ErrorReply("ERR wrong number of arguments for 'lpop' command");
-        }
-
         String key = args[4];
 
         String value = cache.lpop(key);

@@ -1,6 +1,19 @@
 package io.cc.cache.core;
 
 import io.cc.cache.command.generic.CommandCommand;
+import io.cc.cache.command.hash.HdelCommand;
+import io.cc.cache.command.hash.HexistsCommand;
+import io.cc.cache.command.hash.HgetCommand;
+import io.cc.cache.command.hash.HgetallCommand;
+import io.cc.cache.command.hash.HincrbyCommand;
+import io.cc.cache.command.hash.HkeysCommand;
+import io.cc.cache.command.hash.HlenCommand;
+import io.cc.cache.command.hash.HmgetCommand;
+import io.cc.cache.command.hash.HmsetCommand;
+import io.cc.cache.command.hash.HsetCommand;
+import io.cc.cache.command.hash.HsetnxCommand;
+import io.cc.cache.command.hash.HvalsCommand;
+import io.cc.cache.command.key.KeysCommand;
 import io.cc.cache.command.string.AppendCommand;
 import io.cc.cache.command.string.DecrByCommand;
 import io.cc.cache.command.string.DecrCommand;
@@ -43,6 +56,7 @@ public class Commands {
         register(new CommandCommand());
         register(new InfoCommand());
         register(new PingCommand());
+        register(new KeysCommand());
 
         register(new SetCommand());
         register(new GetCommand());
@@ -61,12 +75,28 @@ public class Commands {
         register(new SetRangeCommand());
         register(new MsetnxCommand());
 
+        //list
         register(new LpushCommand());
         register(new LpopCommand());
         register(new RpushCommand());
         register(new RpopCommand());
         register(new LlenCommand());
         register(new LrangeCommand());
+
+        //hash
+        register(new HdelCommand());
+        register(new HexistsCommand());
+        register(new HgetallCommand());
+        register(new HgetCommand());
+        register(new HincrbyCommand());
+        register(new HkeysCommand());
+        register(new HlenCommand());
+        register(new HmgetCommand());
+        register(new HsetCommand());
+        register(new HmsetCommand());
+        register(new HsetnxCommand());
+        register(new HvalsCommand());
+
     }
 
     public static void register(Command command) {

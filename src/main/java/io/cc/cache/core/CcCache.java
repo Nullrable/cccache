@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author nhsoft.lsd
@@ -232,5 +233,123 @@ public class CcCache {
         set(key, oldValue);
 
         return oldValue.length();
+    }
+
+    public Set<String> getKeys() {
+
+       return map.keySet();
+    }
+
+    public int hdel(final String key, final String field) {
+
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return 0;
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+
+        String val = hashMap.remove(field);
+
+        return val == null ? 0 : 1;
+    }
+
+    public int hset(final String key, final String field, final String value) {
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            cacheEntry = new CcCacheEntry<>(new HashMap<>());
+            map.put(key, cacheEntry);
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+        String val = hashMap.put(field, value);
+        return val == null ? 0 : 1;
+    }
+
+    public String hget(final String key, final String field) {
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return null;
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+        return hashMap.get(field);
+    }
+
+    public int hexists(final String key, final String field) {
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return 0;
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+        return hashMap.containsKey(field) ? 1 : 0;
+    }
+
+    public List<String> hgetall(final String key) {
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return new ArrayList<>();
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+        List<String> list = new ArrayList();
+        for (Map.Entry<String, String> entry : hashMap.entrySet()) {
+            list.add(entry.getKey());
+            list.add(entry.getValue());
+        }
+        return list;
+    }
+
+    public int hincrby(final String key, final String field, final int value) {
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            cacheEntry = new CcCacheEntry<>(new HashMap<>());
+            map.put(key, cacheEntry);
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+        int val = Integer.parseInt(hashMap.get(field) == null ? "0" : hashMap.get(field));
+        val += value;
+        hashMap.put(field, String.valueOf(val));
+        return val;
+    }
+
+    public List<String> hkeys(final String key) {
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return new ArrayList<>();
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+        List<String> list = new ArrayList<>(hashMap.keySet());
+        return list;
+    }
+
+    public int hlen(final String key) {
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return 0;
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+        return hashMap.size();
+    }
+
+    public int hsetnx(final String key, final String field, final String value) {
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            cacheEntry = new CcCacheEntry<>(new HashMap<>());
+            map.put(key, cacheEntry);
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+        if (hashMap.containsKey(field)) {
+            return 0;
+        }
+        hashMap.putIfAbsent(field, value);
+        return 1;
+    }
+
+    public List<String> hvals(final String key) {
+        CcCacheEntry<HashMap<String, String>> cacheEntry = (CcCacheEntry<HashMap<String, String>>) map.get(key);
+        if (cacheEntry == null || cacheEntry.getValue() == null) {
+            return new ArrayList<>();
+        }
+        Map<String, String> hashMap = cacheEntry.getValue();
+        List<String> list = new ArrayList<>(hashMap.values());
+        return list;
     }
 }

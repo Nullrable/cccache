@@ -22,10 +22,6 @@ public class LrangeCommand implements Command {
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
 
-        if (args.length <= 8) {
-            return new ErrorReply("ERR wrong number of arguments for 'lrange' command");
-        }
-
         String key = args[4];
 
         int start = Integer.parseInt(args[6]);

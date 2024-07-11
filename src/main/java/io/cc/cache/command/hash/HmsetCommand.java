@@ -1,4 +1,4 @@
-package io.cc.cache.command.string;
+package io.cc.cache.command.hash;
 
 import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
@@ -8,20 +8,22 @@ import io.cc.cache.reply.StringReply;
 /**
  * @author nhsoft.lsd
  */
-public class SetCommand implements Command {
-
-    public static final String NAME = "SET";
-
+public class HmsetCommand implements Command {
     @Override
     public String getName() {
-        return NAME;
+        return "HMSET";
     }
 
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
         String key = args[4];
-        String value = args[6];
-        cache.set(key, value);
+
+        for (int i = 6; i < args.length; i+=4) {
+            String field = args[i];
+            String value = args[i + 2];
+            cache.hset(key, field, value);
+        }
+
         return new StringReply("OK");
     }
 }

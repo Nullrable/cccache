@@ -1,29 +1,25 @@
-package io.cc.cache.command.list;
+package io.cc.cache.command.hash;
 
 import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Reply;
-import io.cc.cache.reply.IntegerReply;
+import io.cc.cache.reply.StringReply;
 
 /**
  * @author nhsoft.lsd
  */
-public class LlenCommand implements Command {
-
-    public static final String NAME = "LLEN";
-
+public class HsetCommand implements Command {
     @Override
     public String getName() {
-        return NAME;
+        return "HSET";
     }
 
     @Override
     public Reply<?> execute(final CcCache cache, final String[] args) {
-
         String key = args[4];
-
-        int size = cache.llen(key);
-
-        return new IntegerReply(size);
+        String field = args[6];
+        String value = args[8];
+        cache.hset(key, field, value);
+        return new StringReply("OK");
     }
 }

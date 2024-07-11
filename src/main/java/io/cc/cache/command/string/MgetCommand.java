@@ -4,7 +4,6 @@ import io.cc.cache.core.CcCache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Reply;
 import io.cc.cache.reply.ArrayReply;
-import io.cc.cache.reply.StringReply;
 import java.util.LinkedList;
 import java.util.List;
 
