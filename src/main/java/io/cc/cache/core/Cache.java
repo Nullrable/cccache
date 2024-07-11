@@ -4,12 +4,14 @@ import io.cc.cache.exception.SyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -690,6 +692,8 @@ public class Cache {
         for (int i = startIndex; i < endIndex; i++) {
             result.add(list.get(i));
         }
+
+        result = result.stream().sorted(Comparator.comparingDouble(ZsetEntry::getScore)).collect(Collectors.toCollection(LinkedHashSet::new));
         return result;
     }
 }
