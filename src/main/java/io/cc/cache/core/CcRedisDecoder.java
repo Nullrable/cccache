@@ -1,4 +1,4 @@
-package io.cc.cache;
+package io.cc.cache.core;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

@@ -1,11 +1,5 @@
-package io.cc.cache;
+package io.cc.cache.core;
 
-import io.cc.cache.core.Cache;
-import io.cc.cache.core.Command;
-import io.cc.cache.core.Commands;
-import io.cc.cache.core.DefaultExpireChecker;
-import io.cc.cache.core.ExpireChecker;
-import io.cc.cache.core.Reply;
 import io.cc.cache.exception.SyntaxException;
 import io.cc.cache.reply.ErrorReply;
 import io.cc.cache.reply.StringReply;
