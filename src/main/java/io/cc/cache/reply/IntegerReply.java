@@ -14,6 +14,6 @@ public class IntegerReply extends Reply<Integer> {
 
     @Override
     public void execute(final ChannelHandlerContext ctx) {
-        writeByteBuf(ctx, ":" + content + "\r\n");
+        integer(ctx, content);
     }
 }

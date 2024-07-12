@@ -17,8 +17,11 @@ public abstract class Reply<T> {
 
     public abstract void execute(ChannelHandlerContext ctx);
 
-    protected void integer(final ChannelHandlerContext ctx, final int content) {
-
+    protected void integer(final ChannelHandlerContext ctx, final Integer content) {
+        if (content == null) {
+            error(ctx);
+            return;
+        }
         writeByteBuf(ctx, ":" + content + "\r\n");
     }
 
@@ -47,8 +50,6 @@ public abstract class Reply<T> {
     }
 
     protected void array(final ChannelHandlerContext ctx, final List<String> contents) {
-
-
         // * + 长度 + \r\n
         // $ + 长度 + \r\n + 内容 + \r\n
         // example:

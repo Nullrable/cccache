@@ -58,6 +58,7 @@ import io.cc.cache.command.zset.ZcountCommand;
 import io.cc.cache.command.zset.ZincrbyCommand;
 import io.cc.cache.command.zset.ZinterstoreCommand;
 import io.cc.cache.command.zset.ZrangeCommand;
+import io.cc.cache.command.zset.ZrankCommand;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -140,6 +141,7 @@ public class Commands {
         register(new ZincrbyCommand());
         register(new ZinterstoreCommand());
         register(new ZrangeCommand());
+        register(new ZrankCommand());
     }
 
     public static void register(Command command) {

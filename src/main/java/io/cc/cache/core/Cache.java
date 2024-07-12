@@ -163,27 +163,14 @@ public class Cache {
 
     public List<String> lrange(final String key, final int start, final int end) {
         CacheEntry<LinkedList<String>> entry = (CacheEntry) map.get(key);
-        if (entry == null || entry.getValue() == null || entry.getValue().size() <= 0) {
+        if (entry == null || entry.getValue() == null || entry.getValue().isEmpty()) {
             return new ArrayList<>();
         }
         LinkedList<String> list = entry.getValue();
         int size = list.size();
 
-        int startIndex = start;
-        if (start < 0) {
-            startIndex =  Math.floorMod(start, size);
-            if (startIndex < 0) {
-                startIndex += size;
-            }
-        }
-        int endIndex = end;
-        if (end < 0) {
-            endIndex = Math.floorMod(end, size);
-            if (endIndex < 0) {
-                endIndex += size;
-            }
-        }
-        endIndex = Math.min(endIndex + 1, size);
+        int startIndex = getStartIndex(start, size);
+        int endIndex = getEndIndex(end, size);
 
         List<String> result = new ArrayList<>();
         for (int i = startIndex; i < endIndex; i++) {
@@ -211,21 +198,8 @@ public class Cache {
 
         int size = exist.length;
 
-        int startIndex = start;
-        if (start < 0) {
-            startIndex =  Math.floorMod(start, size);
-            if (startIndex < 0) {
-                startIndex += size;
-            }
-        }
-        int endIndex = end;
-        if (end < 0) {
-            endIndex = Math.floorMod(end, size);
-            if (endIndex < 0) {
-                endIndex += size;
-            }
-        }
-        endIndex = Math.min(endIndex + 1, size);
+        int startIndex = getStartIndex(start, size);
+        int endIndex = getEndIndex(end, size);
 
         int len = endIndex - startIndex;
         char[] ret = new char[len];
@@ -671,21 +645,8 @@ public class Cache {
         LinkedHashSet<ZsetEntry> zsetEntries = entry.getValue();
         int size = zsetEntries.size();
 
-        int startIndex = start;
-        if (start < 0) {
-            startIndex =  Math.floorMod(start, size);
-            if (startIndex < 0) {
-                startIndex += size;
-            }
-        }
-        int endIndex = end;
-        if (end < 0) {
-            endIndex = Math.floorMod(end, size);
-            if (endIndex < 0) {
-                endIndex += size;
-            }
-        }
-        endIndex = Math.min(endIndex + 1, size);
+        int startIndex = getStartIndex(start, size);
+        int endIndex = getEndIndex(end, size);
 
         List<ZsetEntry> list = new ArrayList<>(zsetEntries);
         Set<ZsetEntry> result = new LinkedHashSet<>();
@@ -695,5 +656,47 @@ public class Cache {
 
         result = result.stream().sorted(Comparator.comparingDouble(ZsetEntry::getScore)).collect(Collectors.toCollection(LinkedHashSet::new));
         return result;
+    }
+
+    public Integer zrank(final String key, final String member) {
+        CacheEntry<LinkedHashSet<ZsetEntry>> entry = (CacheEntry<LinkedHashSet<ZsetEntry>>) map.get(key);
+        if (entry == null || entry.getValue() == null) {
+            return null;
+        }
+
+
+        ZsetEntry indexEntry = entry.getValue().stream().filter(val -> val.getMember().equals(member)).findFirst().orElse(null);
+
+        if (indexEntry == null) {
+            return null;
+        }
+
+        long count = entry.getValue().stream().filter(val -> val.getScore() < indexEntry.getScore()).count();
+
+        return (int) count;
+
+    }
+
+    private int getStartIndex(final int start, final int size) {
+        int startIndex = start;
+        if (start < 0) {
+            startIndex =  Math.floorMod(start, size);
+            if (startIndex < 0) {
+                startIndex += size;
+            }
+        }
+        return startIndex;
+    }
+
+    private int getEndIndex(final int end, final int size) {
+        int endIndex = end;
+        if (end < 0) {
+            endIndex = Math.floorMod(end, size);
+            if (endIndex < 0) {
+                endIndex += size;
+            }
+        }
+        endIndex = Math.min(endIndex + 1, size);
+        return endIndex;
     }
 }
