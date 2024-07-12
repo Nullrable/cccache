@@ -13,7 +13,13 @@ import io.cc.cache.command.hash.HmsetCommand;
 import io.cc.cache.command.hash.HsetCommand;
 import io.cc.cache.command.hash.HsetnxCommand;
 import io.cc.cache.command.hash.HvalsCommand;
+import io.cc.cache.command.key.ExpireAtCommand;
+import io.cc.cache.command.key.ExpireCommand;
 import io.cc.cache.command.key.KeysCommand;
+import io.cc.cache.command.key.PexpireAtCommand;
+import io.cc.cache.command.key.PexpireCommand;
+import io.cc.cache.command.key.PttlCommand;
+import io.cc.cache.command.key.TtlCommand;
 import io.cc.cache.command.set.SaddCommand;
 import io.cc.cache.command.set.ScardCommand;
 import io.cc.cache.command.set.SdiffCommand;
@@ -77,13 +83,21 @@ public class Commands {
         register(new CommandCommand());
         register(new InfoCommand());
         register(new PingCommand());
+
+        //key
         register(new KeysCommand());
+        register(new DelCommand());
+        register(new ExistsCommand());
+        register(new ExpireCommand());
+        register(new ExpireAtCommand());
+        register(new PexpireCommand());
+        register(new PexpireAtCommand());
+        register(new PttlCommand());
+        register(new TtlCommand());
 
         register(new SetCommand());
         register(new GetCommand());
         register(new StrlenCommand());
-        register(new ExistsCommand());
-        register(new DelCommand());
         register(new InrcCommand());
         register(new InrcByCommand());
         register(new DecrCommand());
@@ -142,6 +156,8 @@ public class Commands {
         register(new ZinterstoreCommand());
         register(new ZrangeCommand());
         register(new ZrankCommand());
+
+
     }
 
     public static void register(Command command) {

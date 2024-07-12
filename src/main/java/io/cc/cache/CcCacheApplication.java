@@ -1,5 +1,8 @@
 package io.cc.cache;
 
+import io.cc.cache.core.Cache;
+import io.cc.cache.core.DefaultExpireChecker;
+import io.cc.cache.core.ExpireChecker;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -20,7 +23,14 @@ public class CcCacheApplication {
 
     private static final int port = 6379;
 
+   private static Cache cache = null;
+   private static ExpireChecker checker;
+
     public static void main(String[] args) {
+
+        cache = new Cache();
+        checker = new DefaultExpireChecker(cache);
+        checker.start();
 
         ServerBootstrap serverBootstrap = new ServerBootstrap();
 
@@ -42,7 +52,7 @@ public class CcCacheApplication {
                     protected void initChannel(SocketChannel ch) {
                         ChannelPipeline pipeline = ch.pipeline();
                         pipeline.addLast(new CcRedisDecoder());
-                        pipeline.addLast(new CcRedisHandler());
+                        pipeline.addLast(new CcRedisHandler(cache));
                     }
                 }); // (8)
 
@@ -54,11 +64,18 @@ public class CcCacheApplication {
             System.out.println("redis server start up on port : " + port);
 
             f.channel().closeFuture().sync();
+
+
         } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             bossGroup.shutdownGracefully();
             workGroup.shutdownGracefully();
+
+            checker.stop();
+            checker = null;
+            cache.clear();
+            cache = null;
         }
 
     }

@@ -5,12 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,30 +26,59 @@ public class Cache {
 
     private static final Map<String, CacheEntry<?>> map = new LinkedHashMap<>();
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Data
-    public static class CacheEntry<V>{
+    private static final Map<String, Long> TTL = new HashMap<>();
 
-        private V value;
+    public void clear() {
+        map.clear();
+        TTL.clear();
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @EqualsAndHashCode(of = "member")
-    public static class ZsetEntry {
+    public boolean isExpire(final String key) {
+       return TTL.get(key) != null && TTL.get(key) < System.currentTimeMillis();
+    }
 
-        private double score;
+    public List<String> ttlKeys() {
+        return new ArrayList<>(TTL.keySet());
+    }
 
-        private String member;
 
-        public void addScore(final double increment) {
-            score += increment;
+    public long pttl(final String key) {
+        return TTL.get(key);
+    }
+
+    public long ttl(final String key) {
+        return TTL.get(key) / 1000;
+    }
+
+    public boolean delIfExpire(final String key) {
+        if (isExpire(key)) {
+            del(key);
+            return true;
         }
+        return false;
     }
 
+    public int setExpireAt(final String key, final long timestamp) {
 
+        if (!exists(key)) {
+            return 0;
+        }
+
+        TTL.put(key, timestamp);
+        return 1;
+    }
+
+    public int setExpire(final String key, final long time, TimeUnit timeUnit) {
+        int ret;
+        if (timeUnit.equals(TimeUnit.MILLISECONDS)) {
+            ret = setExpireAt(key, System.currentTimeMillis() + time);
+        } else if (timeUnit.equals(TimeUnit.SECONDS)) {
+            ret = setExpireAt(key, System.currentTimeMillis() + time * 1000);
+        } else {
+            ret = setExpireAt(key, System.currentTimeMillis() + time);
+        }
+        return ret;
+    }
 
     public void set(String key, String value) {
         map.put(key, new CacheEntry<>(value));
@@ -96,6 +127,7 @@ public class Cache {
 
     public int del(final String key) {
         CacheEntry<?> val = map.remove(key);
+        TTL.remove(key);
         if (val == null) {
             return 0;
         }
@@ -675,6 +707,29 @@ public class Cache {
 
         return (int) count;
 
+    }
+
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class CacheEntry<V>{
+
+        private V value;
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @EqualsAndHashCode(of = "member")
+    public static class ZsetEntry {
+
+        private double score;
+
+        private String member;
+
+        public void addScore(final double increment) {
+            score += increment;
+        }
     }
 
     private int getStartIndex(final int start, final int size) {

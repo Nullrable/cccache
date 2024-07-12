@@ -25,6 +25,14 @@ public abstract class Reply<T> {
         writeByteBuf(ctx, ":" + content + "\r\n");
     }
 
+    protected void longer(final ChannelHandlerContext ctx, final Long content) {
+        if (content == null) {
+            error(ctx);
+            return;
+        }
+        writeByteBuf(ctx, ":" + content + "\r\n");
+    }
+
     protected void simpleString(final ChannelHandlerContext ctx, final String content) {
         if (content == null) {
             error(ctx);

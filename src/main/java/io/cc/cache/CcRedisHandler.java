@@ -3,6 +3,8 @@ package io.cc.cache;
 import io.cc.cache.core.Cache;
 import io.cc.cache.core.Command;
 import io.cc.cache.core.Commands;
+import io.cc.cache.core.DefaultExpireChecker;
+import io.cc.cache.core.ExpireChecker;
 import io.cc.cache.core.Reply;
 import io.cc.cache.exception.SyntaxException;
 import io.cc.cache.reply.ErrorReply;
@@ -17,7 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CcRedisHandler extends SimpleChannelInboundHandler<String> {
 
-    private final Cache cache = new Cache();
+    private final Cache cache;
+
+    public CcRedisHandler(Cache cache) {
+       this.cache = cache;
+    }
 
     @Override
     protected void channelRead0(final ChannelHandlerContext ctx, final String string) {
@@ -30,6 +36,12 @@ public class CcRedisHandler extends SimpleChannelInboundHandler<String> {
 
         try {
             if (commander != null) {
+
+                // 删除过期数据
+                if (cache.delIfExpire(args[4])) {
+                    new ErrorReply().execute(ctx);
+                    return;
+                }
                 Reply<?> reply = commander.execute(cache, args);
                 reply.execute(ctx);
             } else {
