@@ -43,10 +43,25 @@ public class Cache {
 
 
     public long pttl(final String key) {
+        if(!exists(key)) {
+            return -2;
+        }
+
+        if (!TTL.containsKey(key)) {
+            return -1;
+        }
         return TTL.get(key);
     }
 
     public long ttl(final String key) {
+        if(!exists(key)) {
+            return -2;
+        }
+
+        if (!TTL.containsKey(key)) {
+            return -1;
+        }
+
         return TTL.get(key) / 1000;
     }
 

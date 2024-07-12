@@ -56,6 +56,8 @@ import io.cc.cache.command.string.MgetCommand;
 import io.cc.cache.command.string.MsetCommand;
 import io.cc.cache.command.string.MsetnxCommand;
 import io.cc.cache.command.string.SetCommand;
+import io.cc.cache.command.string.SetExCommand;
+import io.cc.cache.command.string.SetNxCommand;
 import io.cc.cache.command.string.SetRangeCommand;
 import io.cc.cache.command.string.StrlenCommand;
 import io.cc.cache.command.zset.ZaddCommand;
@@ -95,7 +97,11 @@ public class Commands {
         register(new PttlCommand());
         register(new TtlCommand());
 
+        //string
         register(new SetCommand());
+        register(new SetExCommand());
+        register(new SetNxCommand());
+        register(new MsetnxCommand());
         register(new GetCommand());
         register(new StrlenCommand());
         register(new InrcCommand());
