@@ -24,12 +24,12 @@ import lombok.NoArgsConstructor;
  */
 public class Cache {
 
-    private static final Map<String, CacheEntry<?>> map = new LinkedHashMap<>();
+    private static final Map<String, CacheEntry<?>> MAP = new LinkedHashMap<>();
 
     private static final Map<String, Long> TTL = new HashMap<>();
 
     public void clear() {
-        map.clear();
+        MAP.clear();
         TTL.clear();
     }
 
@@ -96,23 +96,23 @@ public class Cache {
     }
 
     public void set(String key, String value) {
-        map.put(key, new CacheEntry<>(value));
+        MAP.put(key, new CacheEntry<>(value));
     }
 
     public String get(String key) {
-        CacheEntry<String> entry = (CacheEntry<String>) map.get(key);
+        CacheEntry<String> entry = (CacheEntry<String>) MAP.get(key);
         return entry == null ? null : entry.getValue();
     }
 
     public boolean exists(String key) {
-        return map.containsKey(key);
+        return MAP.containsKey(key);
     }
 
     public int incr(final String key) {
         String val = get(key);
         int value = val == null ? 0 : Integer.parseInt(val);
         value ++;
-        map.put(key, new CacheEntry<>(String.valueOf(value)));
+        MAP.put(key, new CacheEntry<>(String.valueOf(value)));
         return value;
     }
 
@@ -120,7 +120,7 @@ public class Cache {
         String val = get(key);
         int value = val == null ? 0 : Integer.parseInt(val);
         value = value + Integer.parseInt(param);
-        map.put(key, new CacheEntry<>(String.valueOf(value)));
+        MAP.put(key, new CacheEntry<>(String.valueOf(value)));
         return value;
     }
 
@@ -128,7 +128,7 @@ public class Cache {
         String val = get(key);
         int value = val == null ? 0 : Integer.parseInt(val);
         value --;
-        map.put(key, new CacheEntry<>(String.valueOf(value)));
+        MAP.put(key, new CacheEntry<>(String.valueOf(value)));
         return value;
     }
 
@@ -136,12 +136,12 @@ public class Cache {
         String val = get(key);
         int value = val == null ? 0 : Integer.parseInt(val);
         value = value - Integer.parseInt(param);
-        map.put(key, new CacheEntry<>(String.valueOf(value)));
+        MAP.put(key, new CacheEntry<>(String.valueOf(value)));
         return value;
     }
 
     public int del(final String key) {
-        CacheEntry<?> val = map.remove(key);
+        CacheEntry<?> val = MAP.remove(key);
         TTL.remove(key);
         if (val == null) {
             return 0;
@@ -150,23 +150,23 @@ public class Cache {
     }
 
     public int lpush(String key, String... values) {
-        CacheEntry<LinkedList<String>> entry = (CacheEntry) map.get(key);
+        CacheEntry<LinkedList<String>> entry = (CacheEntry) MAP.get(key);
         if (entry == null) {
             entry = new CacheEntry<>(new LinkedList<>());
         }
-        LinkedList list = entry.getValue();
+        LinkedList<String> list = entry.getValue();
 
         List.of(values).forEach(list::addFirst);
 
         entry.setValue(list);
 
-        map.put(key, entry);
+        MAP.put(key, entry);
 
         return list.size();
     }
 
     public String lpop(String key) {
-        CacheEntry<LinkedList<String>> entry = (CacheEntry) map.get(key);
+        CacheEntry<LinkedList<String>> entry = (CacheEntry) MAP.get(key);
         if (entry == null || entry.getValue().size() <= 0) {
             return null;
         }
@@ -175,7 +175,7 @@ public class Cache {
     }
 
     public int llen(String key) {
-        CacheEntry<LinkedList<String>> entry = (CacheEntry) map.get(key);
+        CacheEntry<LinkedList<String>> entry = (CacheEntry) MAP.get(key);
         if (entry == null || entry.getValue().size() <= 0) {
             return 0;
         }
@@ -184,7 +184,7 @@ public class Cache {
     }
 
     public int rpush(String key, String... values) {
-        CacheEntry<LinkedList<String>> entry = (CacheEntry) map.get(key);
+        CacheEntry<LinkedList<String>> entry = (CacheEntry) MAP.get(key);
         if (entry == null) {
             entry = new CacheEntry<>(new LinkedList<>());
         }
@@ -194,13 +194,13 @@ public class Cache {
 
         entry.setValue(list);
 
-        map.put(key, entry);
+        MAP.put(key, entry);
 
         return list.size();
     }
 
     public String rpop(String key) {
-        CacheEntry<LinkedList<String>> entry = (CacheEntry) map.get(key);
+        CacheEntry<LinkedList<String>> entry = (CacheEntry) MAP.get(key);
         if (entry == null || entry.getValue().size() <= 0) {
             return null;
         }
@@ -209,7 +209,7 @@ public class Cache {
     }
 
     public List<String> lrange(final String key, final int start, final int end) {
-        CacheEntry<LinkedList<String>> entry = (CacheEntry) map.get(key);
+        CacheEntry<LinkedList<String>> entry = (CacheEntry) MAP.get(key);
         if (entry == null || entry.getValue() == null || entry.getValue().isEmpty()) {
             return new ArrayList<>();
         }
@@ -292,12 +292,12 @@ public class Cache {
 
     public Set<String> getKeys() {
 
-       return map.keySet();
+       return MAP.keySet();
     }
 
     public int hdel(final String key, final String field) {
 
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
 
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
@@ -310,10 +310,10 @@ public class Cache {
     }
 
     public int hset(final String key, final String field, final String value) {
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             cacheEntry = new CacheEntry<>(new LinkedHashMap<>());
-            map.put(key, cacheEntry);
+            MAP.put(key, cacheEntry);
         }
         Map<String, String> hashMap = cacheEntry.getValue();
         String val = hashMap.put(field, value);
@@ -321,7 +321,7 @@ public class Cache {
     }
 
     public String hget(final String key, final String field) {
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return null;
         }
@@ -330,7 +330,7 @@ public class Cache {
     }
 
     public int hexists(final String key, final String field) {
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -339,7 +339,7 @@ public class Cache {
     }
 
     public List<String> hgetall(final String key) {
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return new ArrayList<>();
         }
@@ -353,10 +353,10 @@ public class Cache {
     }
 
     public int hincrby(final String key, final String field, final int value) {
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             cacheEntry = new CacheEntry<>(new LinkedHashMap<>());
-            map.put(key, cacheEntry);
+            MAP.put(key, cacheEntry);
         }
         Map<String, String> hashMap = cacheEntry.getValue();
         int val = Integer.parseInt(hashMap.get(field) == null ? "0" : hashMap.get(field));
@@ -366,7 +366,7 @@ public class Cache {
     }
 
     public List<String> hkeys(final String key) {
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return new ArrayList<>();
         }
@@ -376,7 +376,7 @@ public class Cache {
     }
 
     public int hlen(final String key) {
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -385,10 +385,10 @@ public class Cache {
     }
 
     public int hsetnx(final String key, final String field, final String value) {
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             cacheEntry = new CacheEntry<>(new LinkedHashMap<>());
-            map.put(key, cacheEntry);
+            MAP.put(key, cacheEntry);
         }
         Map<String, String> hashMap = cacheEntry.getValue();
         if (hashMap.containsKey(field)) {
@@ -399,7 +399,7 @@ public class Cache {
     }
 
     public List<String> hvals(final String key) {
-        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) map.get(key);
+        CacheEntry<LinkedHashMap<String, String>> cacheEntry = (CacheEntry<LinkedHashMap<String, String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return new ArrayList<>();
         }
@@ -409,10 +409,10 @@ public class Cache {
     }
 
     public int sadd(final String key, final String... members) {
-        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(key);
+        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             cacheEntry = new CacheEntry<>(new LinkedHashSet<>());
-            map.put(key, cacheEntry);
+            MAP.put(key, cacheEntry);
         }
         Set<String> set = cacheEntry.getValue();
         int count = 0;
@@ -426,7 +426,7 @@ public class Cache {
     }
 
     public int scard(final String key) {
-        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(key);
+        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -435,7 +435,7 @@ public class Cache {
     }
 
     public Set<String> sdiff(final String... keys) {
-        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(keys[0]);
+        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(keys[0]);
         Set<String> originSet;
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             originSet = new LinkedHashSet<>();
@@ -444,7 +444,7 @@ public class Cache {
         }
 
         for (int i = 1; i < keys.length; i++) {
-            CacheEntry<Set<String>> cacheEntryOther = (CacheEntry<Set<String>>) map.get(keys[i]);
+            CacheEntry<Set<String>> cacheEntryOther = (CacheEntry<Set<String>>) MAP.get(keys[i]);
             if (cacheEntry == null || cacheEntry.getValue() == null) {
                 continue;
             }
@@ -456,18 +456,18 @@ public class Cache {
 
     public Set<String> sdiffstore(final String destination, final String... keys) {
         Set<String> diffSet = sdiff(keys);
-        map.put(destination, new CacheEntry<>(diffSet));
+        MAP.put(destination, new CacheEntry<>(diffSet));
         return diffSet;
     }
 
     public Set<String> sinter(final String... keys) {
-        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(keys[0]);
+        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(keys[0]);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return new LinkedHashSet<>();
         }
         Set<String> originSet = new LinkedHashSet<>(cacheEntry.getValue());
         for (int i = 1; i < keys.length; i++) {
-            CacheEntry<Set<String>> cacheEntryOther = (CacheEntry<Set<String>>) map.get(keys[i]);
+            CacheEntry<Set<String>> cacheEntryOther = (CacheEntry<Set<String>>) MAP.get(keys[i]);
             if (cacheEntry == null || cacheEntry.getValue() == null) {
                 continue;
             }
@@ -479,12 +479,12 @@ public class Cache {
 
     public Set<String> sinterstore(final String destination, final String... keys) {
         Set<String> interSet = sinter(keys);
-        map.put(destination, new CacheEntry<>(interSet));
+        MAP.put(destination, new CacheEntry<>(interSet));
         return interSet;
     }
 
     public int sismember(final String key, final String member) {
-        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(key);
+        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -493,7 +493,7 @@ public class Cache {
     }
 
     public Set<String> smembers(final String key) {
-        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(key);
+        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return new LinkedHashSet<>();
         }
@@ -501,7 +501,7 @@ public class Cache {
     }
 
     public int smove(final String source, final String destination, final String member) {
-        CacheEntry<Set<String>> sourceEntry = (CacheEntry<Set<String>>) map.get(source);
+        CacheEntry<Set<String>> sourceEntry = (CacheEntry<Set<String>>) MAP.get(source);
         if (sourceEntry == null || sourceEntry.getValue() == null) {
             return 0;
         }
@@ -515,7 +515,7 @@ public class Cache {
     }
 
     public List<String> spop(final String key, final int count) {
-        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(key);
+        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return null;
         }
@@ -539,7 +539,7 @@ public class Cache {
     }
 
     public Set<String> srandmember(final String key, final int count) {
-        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(key);
+        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return new LinkedHashSet<>();
         }
@@ -557,7 +557,7 @@ public class Cache {
     }
 
     public int srem(final String key, final String... members) {
-        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(key);
+        CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -572,7 +572,7 @@ public class Cache {
     public Set<String> sunion(final String... keys) {
         Set<String> set = new LinkedHashSet<>();
         for (String key : keys) {
-            CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) map.get(key);
+            CacheEntry<Set<String>> cacheEntry = (CacheEntry<Set<String>>) MAP.get(key);
             if (cacheEntry == null || cacheEntry.getValue() == null) {
                 continue;
             }
@@ -583,17 +583,17 @@ public class Cache {
 
     public int sunionstore(final String destination, final String... keys) {
         Set<String> sets = sunion(keys);
-        map.put(destination, new CacheEntry<>(sets));
+        MAP.put(destination, new CacheEntry<>(sets));
         return sets.size();
     }
     //=============================set end========================================
 
     //=============================zset start========================================
     public int zadd(final String key, final ZsetEntry ... entries) {
-        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) map.get(key);
+        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             cacheEntry = new CacheEntry<>(new LinkedHashSet<>());
-            map.put(key, cacheEntry);
+            MAP.put(key, cacheEntry);
         }
         Set<ZsetEntry> set = cacheEntry.getValue();
 
@@ -607,7 +607,7 @@ public class Cache {
     }
 
     public int zcard(final String key) {
-        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) map.get(key);
+        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -616,7 +616,7 @@ public class Cache {
     }
 
     public int zcount(final String key, final double min, final double max) {
-        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) map.get(key);
+        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -632,10 +632,10 @@ public class Cache {
     }
 
     public double zincrby(final String key, final double increment, final String member) {
-        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) map.get(key);
+        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) MAP.get(key);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             cacheEntry = new CacheEntry<>(new LinkedHashSet<>());
-            map.put(key, cacheEntry);
+            MAP.put(key, cacheEntry);
         }
         Set<ZsetEntry> sets = cacheEntry.getValue();
 
@@ -656,7 +656,7 @@ public class Cache {
             throw new SyntaxException();
         }
 
-        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) map.get(keys[0]);
+        CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntry = (CacheEntry<LinkedHashSet<ZsetEntry>>) MAP.get(keys[0]);
         if (cacheEntry == null || cacheEntry.getValue() == null) {
             return 0;
         }
@@ -665,7 +665,7 @@ public class Cache {
         Set<ZsetEntry> resultSet = new LinkedHashSet<>();
         for (ZsetEntry origin : originSet) {
             for (int i = 1; i < keys.length; i++) {
-                CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntryOther = (CacheEntry<LinkedHashSet<ZsetEntry>>) map.get(keys[i]);
+                CacheEntry<LinkedHashSet<ZsetEntry>> cacheEntryOther = (CacheEntry<LinkedHashSet<ZsetEntry>>) MAP.get(keys[i]);
                 if (cacheEntry.getValue() == null) {
                     continue;
                 }
@@ -679,12 +679,12 @@ public class Cache {
             }
         }
 
-        map.put(destination, new CacheEntry<>(resultSet));
+        MAP.put(destination, new CacheEntry<>(resultSet));
         return resultSet.size();
     }
 
     public Set<ZsetEntry> zrange(final String key, final int start, final int end) {
-        CacheEntry<LinkedHashSet<ZsetEntry>> entry = (CacheEntry<LinkedHashSet<ZsetEntry>>) map.get(key);
+        CacheEntry<LinkedHashSet<ZsetEntry>> entry = (CacheEntry<LinkedHashSet<ZsetEntry>>) MAP.get(key);
         if (entry == null || entry.getValue() == null) {
             return new LinkedHashSet<>();
         }
@@ -706,7 +706,7 @@ public class Cache {
     }
 
     public Integer zrank(final String key, final String member) {
-        CacheEntry<LinkedHashSet<ZsetEntry>> entry = (CacheEntry<LinkedHashSet<ZsetEntry>>) map.get(key);
+        CacheEntry<LinkedHashSet<ZsetEntry>> entry = (CacheEntry<LinkedHashSet<ZsetEntry>>) MAP.get(key);
         if (entry == null || entry.getValue() == null) {
             return null;
         }
