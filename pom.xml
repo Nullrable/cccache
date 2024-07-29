@@ -9,9 +9,9 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>io.cc</groupId>
-    <artifactId>CcCache</artifactId>
+    <artifactId>cccache</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>CcCache</name>
+    <name>cccache</name>
     <description>CcCache</description>
     <url/>
     <licenses>

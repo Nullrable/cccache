@@ -32,7 +32,7 @@ public class CcRedisHandler extends SimpleChannelInboundHandler<String> {
             if (commander != null) {
 
                 // 删除过期数据
-                if (cache.delIfExpire(args[4])) {
+                if (args.length > 4  && cache.delIfExpire(args[4])) {
                     new ErrorReply().execute(ctx);
                     return;
                 }
